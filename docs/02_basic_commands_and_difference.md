@@ -12,17 +12,18 @@
 
 # 違い
 
-項目 | Laravel (PHP) | Rails (Ruby) | 備考 |
+| 項目 | Laravel (PHP) | Rails (Ruby) | 備考 |
 | ---- | ---- | ---- | ---- |
-Routing | Route::get('/path', [Ctrl::class, 'index']) | get '/path', to: 'ctrl#index' | Railsは config/routes.rb に集約。|
-Route定義 | Route::resource('topics', TopicCtrl::class) | resources :topics | これだけで 7つの基本アクションが生成。 |
-URL生成 | route('topics.show', $topic) | topic_path(@topic) | Railsは「接頭辞 + path」のメソッド形式。 |
-データ取得 | Topic::findOrFail($id) | Topic.find(params[:id]) | find は見つからないと例外を出す（404）。 |
-全件取得 | Topic::all() | Topic.all | Railsはメソッド呼び出しに () が不要。 |
-条件絞り込み | Topic::where('status', 1)->get() | Topic.where(status: 1) | Railsは最後に .get() 相当を打たなくてもLazyに評価。 |
-リンク作成 | <a href="{{ route(...) }}"> | <%= link_to "表示名", topic_path(@topic) %> | HTMLタグを書かず、ヘルパーメソッドを多用。 |
+| Routing | Route::get('/path', [Ctrl::class, 'index']) | get '/path', to: 'ctrl#index' | Railsは config/routes.| rb に集約。|
+| Route定義 | Route::resource('topics', TopicCtrl::class) | resources :topics | これだけで 7つの基本アクションが生成。 |
+| URL生成 | route('topics.show', $topic) | topic_path(@topic) | Railsは「接頭辞 + path」のメソッド形式。 |
+| データ取得 | Topic::findOrFail($id) | Topic.find(params[:id]) | find は見つからないと例外を出す（404）。 |
+| 全件取得 | Topic::all() | Topic.all | Railsはメソッド呼び出しに () が不要。 |
+| 条件絞り込み | Topic::where('status', 1)->get() | Topic.where(status: 1) | Railsは最後に .get() 相当を打たなくてもLazy| に評価。 |
+| リンク作成 | <a href="{{ route(...) }}"> | <%= link_to "表示名", topic_path(@topic) %> | HTMLタグを書かず、ヘルパーメソッドを多用。 |
 | NULLの表記 | null | nil |  |
 | whereIn | ->where('column', [a, b]) | .where(column: [a, b]) |  |
+| インスタンス生成 | build | new | 慣習的にリレーションを介すときは build を使う |
 
 # 保存について
 

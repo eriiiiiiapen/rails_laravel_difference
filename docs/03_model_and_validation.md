@@ -95,3 +95,27 @@ enum :status, { todo: 0, doing: 1, done: 2 }
 * Laravel: $fillable で一括代入を許可する
 * Rails: Strong Parameters。Controllerの private メソッドで params.require(:task).permit(...) しないと、データが保存されない。エラー取得: @task.errors.full_messages で配列として取得可能。
 
+## 補足
+
+### 違い
+
+* Laravel
+ * Auth::user()->tasks
+  * Auth::userでユーザーを取得
+  * 取得したユーザーからtasksを取得（Collection）
+
+* Rails
+ * current_user.tasks
+  * current_userでユーザーを取得
+  * current_user.tasks時点ではLaravelではQueryBuilderに近い、「ActiveRecord::Relation」の状態
+   * .where や .order を繋げられる
+   * Railsでは最後に .all を書かなくても、そのままで「全件取得のクエリ」として機能する
+
+### ActiveRecordの「遅延評価」と「build」
+
+* 取得: current_user.tasks は、必要になるまでSQLを発行しない（Lazy Loading）。そのため、末尾に .all を付けなくてもループやカウントができる。
+* 生成: current_user.tasks.build は、user_id が最初から注入された状態の Task.new である。
+* 違い
+ * Laravelの $user->tasks はすでに Collection（結果セット）だが、
+ * Railsの user.tasks はまだクエリビルダの状態
+
