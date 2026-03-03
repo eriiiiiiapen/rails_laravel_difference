@@ -86,3 +86,21 @@ docker compose exec web bin/rails generate devise:views
 * スコープ制限: Task.all ではなく current_user.tasks を使う。
 * 関連データの作成: current_user.tasks.build(params) を使うことで、外部キー (user_id) の代入を自動化・隠蔽できる。
 * セキュリティ: データの検索を current_user.tasks.find(id) で行うことで、Laravel の Policy を個別に書かなくても「他人のデータへの不正アクセス」を物理的に防げる。
+
+## ログアウト例（turbo_methodについて）
+
+```
+<%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete } %>
+```
+
+* Laravel: ログアウトは通常 POST ＋　<form> タグを作って CSRF トークンを送るのが一般的（Breezeもそう）。
+* Rails: Deviseのデフォルト設定では、ログアウトは DELETE メソッドを期待。
+* Turbo: Rails 7以降、標準搭載されている Turbo というライブラリが、ただの <a> タグ（GET）を DELETE リクエストに変換してくれる。
+
+## viewでの認証出しわけ＋リンクヘルパー
+
+* 認証判定: user_signed_in? ヘルパーを使用（Laravelの @auth 相当）
+* リンク生成: link_to "表示名", パス名。
+* パスの確認: bin/rails routes で Prefix を確認し、それに _path をつける（例: tasks → tasks_path）
+* Turboの役割: Rails 7以降、DELETE や PATCH をリンクで行うには data: { turbo_method: :xxx } が必須。
+ * Laravelのように手動で <form> を書く必要がほとんどない。
