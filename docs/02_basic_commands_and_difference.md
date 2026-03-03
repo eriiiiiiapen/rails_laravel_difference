@@ -24,6 +24,7 @@
 | NULLの表記 | null | nil |  |
 | whereIn | ->where('column', [a, b]) | .where(column: [a, b]) |  |
 | インスタンス生成 | build | new | 慣習的にリレーションを介すときは build を使う |
+| 削除ボタン | <form> を組んで @method('DELETE') | "link_to ""削除"", @task, data: { turbo_method: :delete, turbo_confirm: ""OK?"" }" |  |
 
 # 保存について
 
@@ -80,3 +81,23 @@ foreach($users as $user){
 
 ※LaravelだとwithでEager loading（一括読み込み）したり、
 loadでmodelに関連をloadしたり、withWhereHasで条件を持ったloadをする。
+
+# Partialとデータの受け渡し
+
+1. 基本：<%= render "layouts/header" %>　：単純な読み込み
+
+* Laravel相当: @include('layouts.header')
+* 特徴: 引数は渡さず、親（Controller）で定義された @tasks などのインスタンス変数は使用可能。
+
+2. 引数あり：<%= render partial: "...", locals: { ... } %>　：変数を「明示的に」渡して読み込む。
+
+* Laravel相当: @include('topics.topic_card', ['topic' => $topic])
+* 特徴: locals で渡した変数は、Partialの中では ローカル変数（@なしの topic）として扱われる。
+* メリット: topic という名前で汎用的に作っておけば、他の場所で @trend_topic を渡して使い回すといった「コンポーネント化」が可能。
+* <%= render "topics/topic_card", topic: @topic %>でもOK
+* locals：変数渡し。locals: { key: value } で渡す。Partial内ではローカル変数として扱うのが「疎結合」となり良い。
+
+# Flash message
+
+Railsでは notice（成功）と alert（警告）が標準。
+Controllerで redirect_to ..., notice: "完了" とすると flash[:notice] に格納される。
