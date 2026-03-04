@@ -18,13 +18,25 @@
 
   <div>
     <%= form.label :description, style: "display: block" %>
-    <%= form.textarea :description %>
+    <%= form.text_area :description %>
   </div>
 
   <div>
     <%= form.label :status, style: "display: block" %>
-    <%= form.number_field :status %>
+    <%= form.text_field :status %>
   </div>
+
+  <div>
+    <%= form.label :image, style: "display: block" %>
+    <%= form.file_field :image %>
+  </div>
+
+  <% if task.image.attached? %>
+    <div>
+      <p>現在アップロード済みの画像:</p>
+      <%= image_tag task.image.variant(resize_to_limit: [100, 100]) %>
+    </div>
+  <% end %>
 
   <div>
     <%= form.submit %>
