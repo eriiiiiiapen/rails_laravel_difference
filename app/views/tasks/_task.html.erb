@@ -14,4 +14,13 @@
     <%= task.status %>
   </div>
 
+  <div>
+    <strong>ImageData:</strong>
+    <%= image_tag task.image if task.image.attached? %>
+
+    <% if task.image.attached? %>
+      <%= link_to "画像をフルサイズで見る", url_for(task.image), target: "_blank" %>
+      <%= link_to "ダウンロード", rails_blob_path(task.image, disposition: "attachment") %>
+    <% end %>
+  </div>
 </div>
