@@ -41,7 +41,7 @@ docker compose up -d
 トラブル: docker build 時の bundle install がネットワークエラーで落ちる。
 原因: Dockerビルド環境と実行環境のネットワーク制限の違い。
 
-解決法（外科手術）
+解決法
 1. docker-compose.yml の command を sleep infinity にして無理やり起動。
 2. docker compose exec web bundle install で実行環境からインストール。
 3. bundle_data ボリュームでGemを永続化する。

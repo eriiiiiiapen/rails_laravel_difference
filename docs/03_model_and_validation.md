@@ -67,7 +67,10 @@ scope :recent, -> { order(created_at: :desc) }
 ```
 
 ※Laravelの場合、モデルに以下のようにscopeメソッドで記載
-　public function scopeActive($query) { return $query->where('active', true); }
+
+```
+public function scopeActive($query) { return $query->where('active', true); }
+```
 
 ## enum
 メソッドの自動生成がある
