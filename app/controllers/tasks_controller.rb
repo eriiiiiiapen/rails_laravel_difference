@@ -5,10 +5,16 @@ class TasksController < ApplicationController
   # GET /tasks or /tasks.json
   def index
     @tasks = current_user.tasks
+
+    respond_to do |format|
+        format.html
+        format.json
+    end
   end
 
   # GET /tasks/1 or /tasks/1.json
   def show
+    @task = Task.find(params[:id])
   end
 
   # GET /tasks/new
