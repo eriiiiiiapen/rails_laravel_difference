@@ -6,9 +6,14 @@ class TasksController < ApplicationController
   def index
     @tasks = current_user.tasks
 
+    if params[:search_params].present?
+      @tasks = @tasks.where("title LIKE ?", "%#{params[:search_params]}%")
+    end
+
     respond_to do |format|
-        format.html
-        format.json
+      format.html #通常時
+      format.turbo_stream # Stimulusからの自動送信時
+      format.json
     end
   end
 
