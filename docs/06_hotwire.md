@@ -1,7 +1,10 @@
 # Hotwire（TurboとStimulus）
 
 LaravelでのLivewire (Turbo) / Alpine.js (Stimulus) に相当する技術。
-JavaScriptをほとんど書かずに、SPA（＝シングルページアプリケーション）のようなサクサク感を出す
+JavaScriptをほとんど書かずに、SPA（＝シングルページアプリケーション）のようなサクサク感を出す。
+
+ただし「Livewire」の場合は、コンポーネントの状態（PHP）とViewが強固に結びついている（＝双方向データバインディング）が、
+「Rails (Hotwire)」はあくまでも独立している技術をHTMLの属性（data-）で繋いでいるだけの疎結合な状態。
 
 ## Turbo
 「ページ全体のリロード」を阻止し、**「変更が必要な部分だけを差し替える」**仕組み
@@ -38,11 +41,35 @@ view
 </div>
 ```
 
+### Laravelとの定義方法の比較
+* Alpine.js: x-ref="xxx" と書き、JS側で this.$refs.xxx で操作する。
+* Stimulus: data-[controller名]-target="xxx" と書き、JS側で this.xxxTarget で操作する。
+
+## 構造の理解：Stimulus と Turbo の連携
+
+1. Stimulus (x_controller.js) = リモコン
+例：ユーザーの操作（入力）をトリガーに、RailsのURLへリクエスト（requestSubmit）を投げる。
+
+2. Rails Controller (x_controller.rb) = 窓口
+例：検索クエリを受け取り、結果のHTML（Turbo Stream）を返す。
+
+3. Turbo Stream (index.turbo_stream.erb) = 指示書
+例：ブラウザに対し、「#x の中身をこのHTMLで更新せよ」と命令。
+
 ## Stimulus Targets のルール
 
 * 定義: static targets = ["name"] と書くと、JS側で this.nameTarget として参照できる。
 * 複数要素: 同じターゲット名が複数ある場合は this.nameTargets (複数形) で配列として取得できる。
 * Alpine.jsの this.$refs.name に近いが、Stimulusは「ターゲットがDOMに存在するか？」を this.hasNameTarget でチェックできるなど、より堅牢な設計になっている。
+
+1. this.xxxTarget
+最初の1つを返し、存在しない場合はエラーを投げる。
+
+2. this.hasXxxTarget
+ターゲットがDOM上に存在するかどうかを `Boolean` で返すため、エラー回避に便利。
+
+3. this.xxxTargets
+合致するすべての要素を配列で返す（`querySelectorAll` に相当）。
 
 ## 違い
 
@@ -71,3 +98,25 @@ app/javascript/controllers/...などが生成
 * show.html.erb や index.html.erb で render する際は、外側でIDを振らずに、Partial内のIDをそのまま利用する。
 
 → Turbo Stream から remove "task_#{@task.id}" と命令した際に、どの画面でも正確に対象要素を特定できる。
+
+## 検索機能の例
+
+Laravel（Livewire）の `wire:model.debounce` は便利だが、
+Railsのこの方式は「標準的なHTMLフォーム送信」の延長線上にあるため、
+デバッグがしやすい（NetworkタブでHTMLが返ってくるのが見える）。
+
+* View: 検索フォームを form_with で作り、Stimulusコントローラーを紐付ける。
+ * index.html.erb に書いたから index アクションが呼ばれるのではなく、form_with url: tasks_path と書いたから TasksController#index にリクエストが飛ぶ。
+* Stimulus: 入力（input）があるたびに、フォームを自動送信（requestSubmit）する。
+* Controller: 検索ワードでフィルタリングし、Turbo Stream 形式でレスポンスを返す。
+* Turbo Stream: 一覧部分（id="result_tasks"）だけを検索結果で書き換える。
+
+* 役割分担
+ * Stimulus：クライアント側の「入力イベント」を拾って「送信」するだけ。
+ * Turbo Stream：サーバー側で「どのHTMLを、どこに差し替えるか」を指示する。
+
+### JSファイルへの内容について
+
+* requestSubmit()
+ * JSで form.submit() を呼ぶとTurboが無視されることがあるが、
+ requestSubmit() を使うとTurboが正しくリクエストをインターセプトして非同期にしてくれる。
