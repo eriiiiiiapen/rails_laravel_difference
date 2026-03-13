@@ -1,6 +1,7 @@
 # RSpecのテストの種類
 
 | テストの種類 | Laravelでの相当 | 役割 |
+| ---- | ---- | ---- |
 | Model Spec | Unit Test (Model) | バリデーション、スコープ、メソッドのロジックを検証 |
 | Request Spec | Feature Test (API/Integration) | HTTPメソッド、ステータスコード、レスポンス内容を検証 |
 | System Spec | Laravel Dusk (Browser Test) | 実際にブラウザを動かし、JavaScriptを含めたUIを検証 |
