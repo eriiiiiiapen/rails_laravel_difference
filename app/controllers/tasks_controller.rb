@@ -1,17 +1,17 @@
+# frozen_string_literal: true
+
 class TasksController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_task, only: %i[ show edit update destroy ]
+  before_action :set_task, only: %i[show edit update destroy]
 
   # GET /tasks or /tasks.json
   def index
     @tasks = current_user.tasks
 
-    if params[:search_params].present?
-      @tasks = @tasks.where("title LIKE ?", "%#{params[:search_params]}%")
-    end
+    @tasks = @tasks.where('title LIKE ?', "%#{params[:search_params]}%") if params[:search_params].present?
 
     respond_to do |format|
-      format.html #通常時
+      format.html # 通常時
       format.turbo_stream # Stimulusからの自動送信時
       format.json
     end
@@ -28,17 +28,16 @@ class TasksController < ApplicationController
   end
 
   # GET /tasks/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /tasks or /tasks.json
   def create
     @task = current_user.tasks.build(task_params)
 
     if @task.save
-      redirect_to @task, notice: "タスクを作成しました"
+      redirect_to @task, notice: 'タスクを作成しました'
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -46,11 +45,11 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
+        format.html { redirect_to @task, notice: 'Task was successfully updated.', status: :see_other }
         format.json { render :show, status: :ok, location: @task }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_content }
+        format.json { render json: @task.errors, status: :unprocessable_content }
       end
     end
   end
@@ -60,19 +59,20 @@ class TasksController < ApplicationController
     @task.destroy!
 
     respond_to do |format|
-      format.html { redirect_to tasks_path, notice: "Task was successfully destroyed.", status: :see_other }
+      format.html { redirect_to tasks_path, notice: 'Task was successfully destroyed.', status: :see_other }
       format.turbo_stream
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_task
-      @task = current_user.tasks.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def task_params
-      params.expect(task: [ :title, :description, :status, :image ])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_task
+    @task = current_user.tasks.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def task_params
+    params.expect(task: %i[title description status image])
+  end
 end
