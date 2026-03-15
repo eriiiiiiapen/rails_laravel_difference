@@ -74,6 +74,7 @@ view
 ## 違い
 
 | 機能 | Laravel (Livewire/Alpine) | Rails (Hotwire) |
+| ---- | ---- | ---- |
 | 画面遷移の高速化 | Livewire (Navigate) | Turbo Drive |
 | 部分更新 | Livewire Component | Turbo Frames |
 | DOM操作命令 | wire:click など | Turbo Streams |

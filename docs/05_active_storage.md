@@ -1,6 +1,7 @@
 # Laravelとの違い
 
 | 機能 | Laravel (Storage) | Rails (Active Storage) |
+| ---- | ---- | ---- |
 | カラム追加 | 必要（$table->string('image')） | 不要（専用の中間テーブルが管理） |
 | 紐付け | Traitやmedialibrary | has_one_attached :name |
 | 保存先 | config/filesystems.php | config/storage.yml |
