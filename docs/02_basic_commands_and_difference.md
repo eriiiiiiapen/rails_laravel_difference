@@ -29,6 +29,7 @@
 # 保存について
 
 | Railsメソッド | 特徴 | Laravel相当 |
+| ---- | ---- | ---- |
 | save | 戻り値が true/false。バリデーション失敗で false。 | save() |
 | save! | 失敗時に例外を投げる。一括処理などでよく使う。 | なし |
 | update | 属性を更新して保存。 | update([]) |
@@ -38,6 +39,7 @@
 # 例外について
 
 | Laravel (PHP) | Rails (Ruby) | 役割 |
+| ---- | ---- | ---- |
 | try | begin | 監視の開始 |
 | catch (Exception $e) | rescue => e | エラーの捕捉 |
 | throw new Exception() | raise "error" | 例外を意図的に投げる |
@@ -46,6 +48,7 @@
 # クエリの書き方
 
 | 記法 | 意味 | SQLのイメージ |
+| ---- | ---- | ---- |
 | .joins(:topic) | Topicだけ結合 | JOIN topics ON ... |
 | .joins(:topic, :user) | TopicとUserを両方結合（並列） | JOIN topics ... JOIN users ... |
 | .joins(topic: :subject) | Topicを介してSubjectを結合（直列） | JOIN topics ... JOIN subjects ... |
@@ -75,6 +78,7 @@ foreach($users as $user){
 
 ## Railsでの回避方法
 | メソッド | 発行されるSQL | 特徴 | 関連テーブルでの絞り込み (where) |
+| ---- | ---- | ---- | ---- |
 | preload | 別々に実行 (2回〜) | 最もシンプル。各テーブルを個別に引く。 | 不可 (エラーになる) |
 | eager_load | 1回の巨大なJOIN | LEFT OUTER JOIN で一気に取得。 | 可能 |
 | includes | 自動切り替え | 基本は preload、必要なら eager_load になる。 | 条件付きで可能 |
